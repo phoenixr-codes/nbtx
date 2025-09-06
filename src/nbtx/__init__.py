@@ -44,7 +44,9 @@ nested tags.
 """
 
 STRING_LENGTH_LIMIT = 32_767
-
+"""
+The maximum length for strings including string tag values and tag names.
+"""
 
 def _struct_code_for_endianness(endianness: Endianness) -> str:
     return "<" if endianness == "little" else ">"
@@ -396,6 +398,9 @@ def _tag_class_by_id(id: int) -> type[Tag[Any]]:
 
 @dataclass
 class NBTException(Exception):
+    """
+    Base exceptions for NBT related exceptions.
+    """
     pass
 
 
@@ -480,7 +485,6 @@ class Tag[T](ABC):
         """
         The ID that resembles the tag in binary format.
         """
-        ...
 
     @classmethod
     @abstractmethod
@@ -489,19 +493,27 @@ class Tag[T](ABC):
         Reads bytes from a buffer and interprets them as this tag.
 
         This is a low-level function. If you intend to read an NBT input
-        use `load`.
+        use `load` instead.
 
         This process includes parsing the ID, the name and the value of the tag.
         This function returns a tuple containing the tag instance and the
         remaining bytes.
         """
-        ...
 
     @abstractmethod
-    def _write(self, stream: IO[bytes], *, endianness: Endianness) -> None: ...
+    def _write(self, stream: IO[bytes], *, endianness: Endianness) -> None:
+        """
+        Writes bytes to a buffer.
+
+        This is a low-level function. If you intend to write NBT tags use
+        `dump` instead.
+        """
 
     @abstractmethod
-    def pretty(self) -> str: ...
+    def pretty(self) -> str:
+        """
+        Returns a human readable pretty representation of the tag structure.
+        """
 
 
 @dataclass(frozen=True)
@@ -910,5 +922,13 @@ def dump(
 ) -> None:
     """
     Dumps an NBT tag to a file.
+
+    # Parameters
+
+    - `tag` -- The root tag to write to the stream.
+    - `stream` -- The stream to write to.
+    - `endianness` -- The byte order to use. Java Edition usually uses big
+      endian byte order and Bedrock Edition usually uses little endian byte
+      order.
     """
     tag._write(stream, endianness=endianness)
