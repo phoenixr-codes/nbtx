@@ -483,7 +483,7 @@ class Tag[T](ABC):
     @abstractmethod
     def id() -> int:
         """
-        The ID that resembles the tag in binary format.
+        The ID that represents the tag in binary format.
         """
 
     @classmethod
