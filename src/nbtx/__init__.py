@@ -48,6 +48,7 @@ STRING_LENGTH_LIMIT = 32_767
 The maximum length for strings including string tag values and tag names.
 """
 
+
 def _struct_code_for_endianness(endianness: Endianness) -> str:
     return "<" if endianness == "little" else ">"
 
@@ -401,6 +402,7 @@ class NBTException(Exception):
     """
     Base exceptions for NBT related exceptions.
     """
+
     pass
 
 
@@ -518,6 +520,7 @@ class Tag[T](ABC):
 
 @dataclass(frozen=True)
 class TagByte(Tag[int]):
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -537,6 +540,7 @@ class TagByte(Tag[int]):
         _write_string(endianness, self.name, stream)
         _write_byte(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         return f"Byte({self.name!r}): {self.value}"
@@ -544,6 +548,7 @@ class TagByte(Tag[int]):
 
 @dataclass(frozen=True)
 class TagShort(Tag[int]):
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -563,6 +568,7 @@ class TagShort(Tag[int]):
         _write_string(endianness, self.name, stream)
         _write_short(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         return f"Short({self.name!r}): {self.value}"
@@ -570,6 +576,7 @@ class TagShort(Tag[int]):
 
 @dataclass(frozen=True)
 class TagInt(Tag[int]):
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -589,6 +596,7 @@ class TagInt(Tag[int]):
         _write_string(endianness, self.name, stream)
         _write_int(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         return f"Int({self.name!r}): {self.value}"
@@ -596,6 +604,7 @@ class TagInt(Tag[int]):
 
 @dataclass(frozen=True)
 class TagLong(Tag[int]):
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -615,6 +624,7 @@ class TagLong(Tag[int]):
         _write_string(endianness, self.name, stream)
         _write_long(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         return f"Long({self.name!r}): {self.value}"
@@ -622,6 +632,7 @@ class TagLong(Tag[int]):
 
 @dataclass(frozen=True)
 class TagFloat(Tag[float]):
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -641,6 +652,7 @@ class TagFloat(Tag[float]):
         _write_string(endianness, self.name, stream)
         _write_float(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         return f"Float({self.name!r}): {self.value}"
@@ -648,6 +660,7 @@ class TagFloat(Tag[float]):
 
 @dataclass(frozen=True)
 class TagDouble(Tag[float]):
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -667,6 +680,7 @@ class TagDouble(Tag[float]):
         _write_string(endianness, self.name, stream)
         _write_double(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         return f"Double({self.name!r}): {self.value}"
@@ -682,6 +696,7 @@ class TagString(Tag[str]):
         if len(self.value) > STRING_LENGTH_LIMIT:
             raise StringTooLongException(len(self.value))
 
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -701,6 +716,7 @@ class TagString(Tag[str]):
         _write_string(endianness, self.name, stream)
         _write_string(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         return f"String({self.name!r}): {self.value!r}"
@@ -719,6 +735,7 @@ class TagList[T](Tag[Sequence[Tag[T]]]):
             if child.name != "":
                 raise UnexpectedNameException()
 
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -738,6 +755,7 @@ class TagList[T](Tag[Sequence[Tag[T]]]):
         _write_string(endianness, self.name, stream)
         _write_list(endianness, self.value, self.child_id, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         string = ""
@@ -752,6 +770,7 @@ class TagList[T](Tag[Sequence[Tag[T]]]):
 
 @dataclass(frozen=True)
 class TagByteList[T](Tag[Sequence[int]]):
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -771,6 +790,7 @@ class TagByteList[T](Tag[Sequence[int]]):
         _write_string(endianness, self.name, stream)
         _write_byte_list(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         string = ""
@@ -784,6 +804,7 @@ class TagByteList[T](Tag[Sequence[int]]):
 
 @dataclass(frozen=True)
 class TagIntList(Tag[Sequence[int]]):
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -803,6 +824,7 @@ class TagIntList(Tag[Sequence[int]]):
         _write_string(endianness, self.name, stream)
         _write_int_list(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         string = ""
@@ -816,6 +838,7 @@ class TagIntList(Tag[Sequence[int]]):
 
 @dataclass(frozen=True)
 class TagLongList(Tag[Sequence[int]]):
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -835,6 +858,7 @@ class TagLongList(Tag[Sequence[int]]):
         _write_string(endianness, self.name, stream)
         _write_long_list(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         string = ""
@@ -857,6 +881,7 @@ class TagCompound(Tag[Sequence[Tag[Any]]]):
             if child.name == "":
                 raise ExpectedNameException()
 
+    # docstr-coverage:inherited
     @override
     @staticmethod
     def id() -> int:
@@ -876,6 +901,7 @@ class TagCompound(Tag[Sequence[Tag[Any]]]):
         _write_string(endianness, self.name, stream)
         _write_compound(endianness, self.value, stream)
 
+    # docstr-coverage:inherited
     @override
     def pretty(self) -> str:
         string = ""

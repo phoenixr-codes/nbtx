@@ -13,14 +13,15 @@ def format(session: nox.Session) -> None:
 @nox.session
 def coverage(session: nox.Session) -> None:
     session.install(".[dev]")
+    session.run("coverage", "run", "-m", "pytest", "tests")
     session.run("coverage", "report", "-m")
-    session.run("docstr-coverage", "--skip-private", "--skip-magic", "powercli")
+    session.run("docstr-coverage", "--skip-private", "--skip-magic", "src/nbtx")
 
 
 @nox.session
 def docs(session: nox.Session) -> None:
     session.install(".[docs]")
-    session.run("sphinx-build", "-M", "html", "docs", "docs/_build")
+    session.run("pdoc", "-o", "docs", "nbtx")
 
 
 @nox.session(python=PYTHON)

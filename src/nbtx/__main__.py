@@ -1,3 +1,7 @@
+"""
+Command-line interface for NBTX.
+"""
+
 import sys
 from argparse import ArgumentParser, FileType
 
