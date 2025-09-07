@@ -454,12 +454,20 @@ class StringTooLongException(NBTException):
 
 @dataclass
 class UnemptyBufferException(NBTException):
+    """
+    Exception raised when a buffer was not empty after full parse.
+    """
+
     def __str__(self) -> str:
         return "buffer was not empty after full parse"
 
 
 @dataclass
 class FormatError(NBTException):
+    """
+    Exception raised when the input is not valid NBT format.
+    """
+
     message: str
 
     def __str__(self) -> str:
@@ -468,6 +476,10 @@ class FormatError(NBTException):
 
 @dataclass(frozen=True)
 class Tag[T](ABC):
+    """
+    Base class for NBT tags.
+    """
+
     name: str
     """
     The name of the tag.
@@ -520,6 +532,10 @@ class Tag[T](ABC):
 
 @dataclass(frozen=True)
 class TagByte(Tag[int]):
+    """
+    NBT tag for a single byte.
+    """
+
     # docstr-coverage:inherited
     @override
     @staticmethod
@@ -548,6 +564,10 @@ class TagByte(Tag[int]):
 
 @dataclass(frozen=True)
 class TagShort(Tag[int]):
+    """
+    NBT tag for a short integer (signed 16-bit integer).
+    """
+
     # docstr-coverage:inherited
     @override
     @staticmethod
@@ -576,6 +596,10 @@ class TagShort(Tag[int]):
 
 @dataclass(frozen=True)
 class TagInt(Tag[int]):
+    """
+    NBT tag for an integer (signed 32-bit integer).
+    """
+
     # docstr-coverage:inherited
     @override
     @staticmethod
@@ -604,6 +628,10 @@ class TagInt(Tag[int]):
 
 @dataclass(frozen=True)
 class TagLong(Tag[int]):
+    """
+    NBT tag for a long integer (signed 64-bit integer).
+    """
+
     # docstr-coverage:inherited
     @override
     @staticmethod
@@ -632,6 +660,10 @@ class TagLong(Tag[int]):
 
 @dataclass(frozen=True)
 class TagFloat(Tag[float]):
+    """
+    NBT tag for an integer (32-bit floating point).
+    """
+
     # docstr-coverage:inherited
     @override
     @staticmethod
@@ -660,6 +692,10 @@ class TagFloat(Tag[float]):
 
 @dataclass(frozen=True)
 class TagDouble(Tag[float]):
+    """
+    NBT tag for an integer (64-bit floating point).
+    """
+
     # docstr-coverage:inherited
     @override
     @staticmethod
@@ -689,7 +725,7 @@ class TagDouble(Tag[float]):
 @dataclass(frozen=True)
 class TagString(Tag[str]):
     """
-    An NBT string.
+    NBT tag for a UTF-8 encoded string.
     """
 
     def __post_init__(self) -> None:
@@ -724,6 +760,10 @@ class TagString(Tag[str]):
 
 @dataclass(frozen=True)
 class TagList[T](Tag[Sequence[Tag[T]]]):
+    """
+    NBT tag for a list containing nameless tags of one kind.
+    """
+
     child_id: int = field(kw_only=True)
 
     def __post_init__(self) -> None:
@@ -770,6 +810,10 @@ class TagList[T](Tag[Sequence[Tag[T]]]):
 
 @dataclass(frozen=True)
 class TagByteList[T](Tag[Sequence[int]]):
+    """
+    NBT tag for a list of bytes.
+    """
+
     # docstr-coverage:inherited
     @override
     @staticmethod
@@ -804,6 +848,10 @@ class TagByteList[T](Tag[Sequence[int]]):
 
 @dataclass(frozen=True)
 class TagIntList(Tag[Sequence[int]]):
+    """
+    NBT tag for a list of integers.
+    """
+
     # docstr-coverage:inherited
     @override
     @staticmethod
@@ -838,6 +886,10 @@ class TagIntList(Tag[Sequence[int]]):
 
 @dataclass(frozen=True)
 class TagLongList(Tag[Sequence[int]]):
+    """
+    NBT tag for a list of long integers.
+    """
+
     # docstr-coverage:inherited
     @override
     @staticmethod
@@ -873,7 +925,7 @@ class TagLongList(Tag[Sequence[int]]):
 @dataclass(frozen=True)
 class TagCompound(Tag[Sequence[Tag[Any]]]):
     """
-    An NBT compound.
+    NBT tag for a compound (list of uniquely named tags).
     """
 
     def __post_init__(self) -> None:
