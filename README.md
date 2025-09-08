@@ -5,7 +5,7 @@ Zero-dependency, strictly-typed NBT parser and writer.
 - Documentation: <https://phoenixr-codes.github.io/nbtx/>
 - PyPI: <https://pypi.org/project/nbtx/>
 
-## Installation
+## Installation (Library)
 
 Because the entire implementation finds place in a single file and does not
 depend on third-party libraries, you can simply copy `src/nbtx/__init__.py`
@@ -28,6 +28,14 @@ poetry add nbtx
 
 ```console
 uv add nbtx
+```
+
+## Installation (CLI)
+
+### pipx
+
+```
+pipx install nbtx
 ```
 
 ## Usage (Library)
