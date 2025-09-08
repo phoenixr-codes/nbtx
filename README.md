@@ -2,6 +2,9 @@
 
 Zero-dependency, strictly-typed NBT parser and writer.
 
+- Documentation: <https://phoenixr-codes.github.io/nbtx/>
+- PyPI: <https://pypi.org/project/nbtx/>
+
 ## Installation
 
 Because the entire implementation finds place in a single file and does not
@@ -36,6 +39,26 @@ with open("file.nbt", "rb") as f:
     content = nbtx.load(f)
 
 print(content.pretty())
+```
+
+## Usage (CLI)
+
+You can display the contents of an NBT file by using the CLI of nbtx:
+
+### Read Big Endian NBT File
+
+```sh
+cat samples/bigtest.nbt | nbtx -e big
+# or
+nbtx -e big samples/bigtest.nbt
+```
+
+### Read Little Endian NBT File
+
+```sh
+cat samples/caged_villager.mcstructure | nbtx -e little
+# or
+nbtx -e little samples/caged_villager.mcstructure
 ```
 
 ## References

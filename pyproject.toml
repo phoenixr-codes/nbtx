@@ -39,6 +39,9 @@ docs = [
   "pdoc==15.0.4",
 ]
 
+[project.scripts]
+nbtx = "nbtx.__main__:main"
+
 [tool.poetry]
 packages = [{ include = "nbtx", from = "src" }]
 
