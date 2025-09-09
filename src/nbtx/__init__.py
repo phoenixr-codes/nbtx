@@ -343,8 +343,8 @@ def _write_list(
 
 def _read_compound(
     endianness: Endianness, buffer: bytes
-) -> tuple[bytes, Sequence[Tag[Any]]]:
-    compound: list[Tag[Any]] = []
+) -> tuple[bytes, Sequence[Tag[Any, Any]]]:
+    compound: list[Tag[Any, Any]] = []
     while True:
         (new_buffer_if_end, child_id) = _read_id(endianness, buffer)
         if child_id == 0x00:
@@ -362,14 +362,14 @@ def _read_compound(
 
 
 def _write_compound(
-    endianness: Endianness, children: Sequence[Tag[Any]], stream: IO[bytes]
+    endianness: Endianness, children: Sequence[Tag[Any, Any]], stream: IO[bytes]
 ) -> None:
     for child in children:
         child._write(stream, endianness=endianness)
     stream.write(b"\0")
 
 
-def _tag_class_by_id(id: int) -> type[Tag[Any]]:
+def _tag_class_by_id(id: int) -> type[Tag[Any, Any]]:
     if id == TagByte.id():
         return TagByte
     if id == TagShort.id():
@@ -475,7 +475,7 @@ class FormatError(NBTException):
 
 
 @dataclass(frozen=True)
-class Tag[T](ABC):
+class Tag[T, P](ABC):
     """
     Base class for NBT tags.
     """
@@ -500,9 +500,15 @@ class Tag[T](ABC):
         The ID that represents the tag in binary format.
         """
 
+    @abstractmethod
+    def as_python(self) -> P:
+        """
+        Returns a python representation of this tag.
+        """
+
     @classmethod
     @abstractmethod
-    def _read(cls, buffer: bytes, *, endianness: Endianness) -> tuple[Tag[T], bytes]:
+    def _read(cls, buffer: bytes, *, endianness: Endianness) -> tuple[Tag[T, P], bytes]:
         """
         Reads bytes from a buffer and interprets them as this tag.
 
@@ -531,7 +537,7 @@ class Tag[T](ABC):
 
 
 @dataclass(frozen=True)
-class TagByte(Tag[int]):
+class TagByte(Tag[int, int]):
     """
     NBT tag for a single byte.
     """
@@ -541,6 +547,11 @@ class TagByte(Tag[int]):
     @staticmethod
     def id() -> int:
         return 0x01
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> int:
+        return self.value
 
     @override
     @classmethod
@@ -563,7 +574,7 @@ class TagByte(Tag[int]):
 
 
 @dataclass(frozen=True)
-class TagShort(Tag[int]):
+class TagShort(Tag[int, int]):
     """
     NBT tag for a short integer (signed 16-bit integer).
     """
@@ -573,6 +584,11 @@ class TagShort(Tag[int]):
     @staticmethod
     def id() -> int:
         return 0x02
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> int:
+        return self.value
 
     @override
     @classmethod
@@ -595,7 +611,7 @@ class TagShort(Tag[int]):
 
 
 @dataclass(frozen=True)
-class TagInt(Tag[int]):
+class TagInt(Tag[int, int]):
     """
     NBT tag for an integer (signed 32-bit integer).
     """
@@ -605,6 +621,11 @@ class TagInt(Tag[int]):
     @staticmethod
     def id() -> int:
         return 0x03
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> int:
+        return self.value
 
     @override
     @classmethod
@@ -627,7 +648,7 @@ class TagInt(Tag[int]):
 
 
 @dataclass(frozen=True)
-class TagLong(Tag[int]):
+class TagLong(Tag[int, int]):
     """
     NBT tag for a long integer (signed 64-bit integer).
     """
@@ -637,6 +658,11 @@ class TagLong(Tag[int]):
     @staticmethod
     def id() -> int:
         return 0x04
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> int:
+        return self.value
 
     @override
     @classmethod
@@ -659,7 +685,7 @@ class TagLong(Tag[int]):
 
 
 @dataclass(frozen=True)
-class TagFloat(Tag[float]):
+class TagFloat(Tag[float, float]):
     """
     NBT tag for an integer (32-bit floating point).
     """
@@ -669,6 +695,11 @@ class TagFloat(Tag[float]):
     @staticmethod
     def id() -> int:
         return 0x05
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> float:
+        return self.value
 
     @override
     @classmethod
@@ -691,7 +722,7 @@ class TagFloat(Tag[float]):
 
 
 @dataclass(frozen=True)
-class TagDouble(Tag[float]):
+class TagDouble(Tag[float, float]):
     """
     NBT tag for an integer (64-bit floating point).
     """
@@ -701,6 +732,11 @@ class TagDouble(Tag[float]):
     @staticmethod
     def id() -> int:
         return 0x06
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> float:
+        return self.value
 
     @override
     @classmethod
@@ -723,7 +759,7 @@ class TagDouble(Tag[float]):
 
 
 @dataclass(frozen=True)
-class TagString(Tag[str]):
+class TagString(Tag[str, str]):
     """
     NBT tag for a UTF-8 encoded string.
     """
@@ -737,6 +773,11 @@ class TagString(Tag[str]):
     @staticmethod
     def id() -> int:
         return 0x08
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> str:
+        return self.value
 
     @override
     @classmethod
@@ -759,7 +800,7 @@ class TagString(Tag[str]):
 
 
 @dataclass(frozen=True)
-class TagList[T](Tag[Sequence[Tag[T]]]):
+class TagList[T, P](Tag[Sequence[Tag[T, P]], list[P]]):
     """
     NBT tag for a list containing nameless tags of one kind.
     """
@@ -780,6 +821,11 @@ class TagList[T](Tag[Sequence[Tag[T]]]):
     @staticmethod
     def id() -> int:
         return 0x09
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> list[P]:
+        return [tag.as_python() for tag in self.value]
 
     @override
     @classmethod
@@ -809,7 +855,7 @@ class TagList[T](Tag[Sequence[Tag[T]]]):
 
 
 @dataclass(frozen=True)
-class TagByteList[T](Tag[Sequence[int]]):
+class TagByteList[T](Tag[Sequence[int], Sequence[int]]):
     """
     NBT tag for a list of bytes.
     """
@@ -819,6 +865,11 @@ class TagByteList[T](Tag[Sequence[int]]):
     @staticmethod
     def id() -> int:
         return 0x07
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> Sequence[int]:
+        return self.value
 
     @override
     @classmethod
@@ -847,7 +898,7 @@ class TagByteList[T](Tag[Sequence[int]]):
 
 
 @dataclass(frozen=True)
-class TagIntList(Tag[Sequence[int]]):
+class TagIntList(Tag[Sequence[int], Sequence[int]]):
     """
     NBT tag for a list of integers.
     """
@@ -857,6 +908,11 @@ class TagIntList(Tag[Sequence[int]]):
     @staticmethod
     def id() -> int:
         return 0x0B
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> Sequence[int]:
+        return self.value
 
     @override
     @classmethod
@@ -885,7 +941,7 @@ class TagIntList(Tag[Sequence[int]]):
 
 
 @dataclass(frozen=True)
-class TagLongList(Tag[Sequence[int]]):
+class TagLongList(Tag[Sequence[int], Sequence[int]]):
     """
     NBT tag for a list of long integers.
     """
@@ -895,6 +951,11 @@ class TagLongList(Tag[Sequence[int]]):
     @staticmethod
     def id() -> int:
         return 0x0C
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> Sequence[int]:
+        return self.value
 
     @override
     @classmethod
@@ -923,7 +984,7 @@ class TagLongList(Tag[Sequence[int]]):
 
 
 @dataclass(frozen=True)
-class TagCompound(Tag[Sequence[Tag[Any]]]):
+class TagCompound[T, P](Tag[Sequence[Tag[T, P]], dict[str, P]]):
     """
     NBT tag for a compound (list of uniquely named tags).
     """
@@ -938,6 +999,14 @@ class TagCompound(Tag[Sequence[Tag[Any]]]):
     @staticmethod
     def id() -> int:
         return 0x0A
+
+    # docstr-coverage:inherited
+    @override
+    def as_python(self) -> dict[str, P]:
+        result = {}
+        for tag in self.value:
+            result[tag.name] = tag.as_python()
+        return result
 
     @override
     @classmethod
@@ -971,7 +1040,7 @@ def load(
     *,
     endianness: Endianness = "little",
     ignore_rest: bool = False,
-) -> Tag[Any]:
+) -> Tag[Any, Any]:
     """
     Loads an NBT file and returns the contained NBT tag.
 
@@ -996,7 +1065,7 @@ def load(
 
 
 def dump(
-    tag: Tag[Any], stream: IO[bytes], *, endianness: Endianness = "little"
+    tag: Tag[Any, Any], stream: IO[bytes], *, endianness: Endianness = "little"
 ) -> None:
     """
     Dumps an NBT tag to a file.

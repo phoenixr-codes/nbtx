@@ -1,4 +1,5 @@
 from io import BytesIO
+from typing import Any
 
 import nbtx
 from nbtx import (
@@ -18,7 +19,7 @@ from nbtx import (
 
 
 def test_nested_list() -> None:
-    tree = TagCompound(
+    tree = TagCompound[Any, Any](
         "",
         [
             TagList(
@@ -42,7 +43,7 @@ def test_nested_list() -> None:
 
 
 def test_round_trip() -> None:
-    tree = TagCompound(
+    tree = TagCompound[Any, Any](
         "",
         [
             TagByte("hello", 127),
