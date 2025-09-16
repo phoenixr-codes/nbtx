@@ -1,6 +1,6 @@
 [project]
 name = "nbtx"
-version = "0.3.0"
+version = "0.3.1"
 description = "Minecraft NBT parser"
 authors = [{ name = "Jonas da Silva", email = "phoenixr41414141@gmail.com" }]
 readme = "README.md"

@@ -845,7 +845,7 @@ class TagList[T, P](Tag[Sequence[Tag[T, P]], list[P]]):
     @override
     def pretty(self) -> str:
         string = ""
-        string += f"Compound({self.name!r}): {len(self.value)} entries\n"
+        string += f"TagList({self.name!r}): {len(self.value)} entries\n"
         string += "{\n"
         for child in self.value:
             for line in child.pretty().splitlines():

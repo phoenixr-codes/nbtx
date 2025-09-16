@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- Fix type in pretty representation of `TagList`.
+
 ## 0.3.0
 
 - Add `as_python` method for tags.
