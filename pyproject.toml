@@ -24,6 +24,11 @@ classifiers = [
   "Typing :: Typed",
 ]
 
+[project.urls]
+repository = "https://github.com/phoenixr-codes/nbtx"
+documentation = "https://phoenixr-codes.github.io/nbtx/nbtx.html"
+"Bug Tracker" = "https://github.com/phoenixr-codes/nbtx/issues"
+
 [project.optional-dependencies]
 dev = [
   "mypy==1.17.1",
