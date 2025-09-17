@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2
+
+- Remove print in `load` function.
+
 ## 0.3.1
 
 - Fix type in pretty representation of `TagList`.

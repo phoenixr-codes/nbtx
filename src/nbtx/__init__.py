@@ -1058,7 +1058,6 @@ def load(
     (_, id) = _read_id(endianness, buffer)
     tag_cls = _tag_class_by_id(id)
     (tag, rest) = tag_cls._read(buffer, endianness=endianness)
-    print(rest)
     if rest and not ignore_rest:
         raise UnemptyBufferException()
     return tag
