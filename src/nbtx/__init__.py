@@ -1034,6 +1034,12 @@ class TagCompound[T, P](Tag[Sequence[Tag[T, P]], dict[str, P]]):
         string += "}"
         return string
 
+    def __getitem__(self, key: str) -> Tag[T, P]:
+        for tag in self.value:
+            if tag.name == key:
+                return tag
+        raise KeyError(f"{key!r}")
+
 
 def load(
     file: IO[bytes],
