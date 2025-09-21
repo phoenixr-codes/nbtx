@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+
+- Implement `__getitem__` for container tags.
+- Remove unused generic type in `TagByteList`.
+
 ## 0.3.2
 
 - Remove print in `load` function.

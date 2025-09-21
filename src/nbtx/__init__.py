@@ -853,9 +853,12 @@ class TagList[T, P](Tag[Sequence[Tag[T, P]], list[P]]):
         string += "}"
         return string
 
+    def __getitem__(self, index: int) -> Tag[T, P]:
+        return self.value[index]
+
 
 @dataclass(frozen=True)
-class TagByteList[T](Tag[Sequence[int], Sequence[int]]):
+class TagByteList(Tag[Sequence[int], Sequence[int]]):
     """
     NBT tag for a list of bytes.
     """
@@ -895,6 +898,9 @@ class TagByteList[T](Tag[Sequence[int], Sequence[int]]):
             string += f"{PRETTY_INDENTATION}{long}\n"
         string += "}"
         return string
+
+    def __getitem__(self, index: int) -> int:
+        return self.value[index]
 
 
 @dataclass(frozen=True)
@@ -939,6 +945,9 @@ class TagIntList(Tag[Sequence[int], Sequence[int]]):
         string += "}"
         return string
 
+    def __getitem__(self, index: int) -> int:
+        return self.value[index]
+
 
 @dataclass(frozen=True)
 class TagLongList(Tag[Sequence[int], Sequence[int]]):
@@ -981,6 +990,9 @@ class TagLongList(Tag[Sequence[int], Sequence[int]]):
             string += f"{PRETTY_INDENTATION}{byte}\n"
         string += "}"
         return string
+
+    def __getitem__(self, index: int) -> int:
+        return self.value[index]
 
 
 @dataclass(frozen=True)
