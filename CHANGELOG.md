@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1
+
+- Make container tags subclasses of `collections.abc.Sequence` and
+  `collections.abc.Mapping` accordingly.
+
 ## 0.4.0
 
 - Implement `__getitem__` for container tags.

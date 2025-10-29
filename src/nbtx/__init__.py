@@ -31,9 +31,9 @@ from __future__ import annotations
 
 import struct
 from abc import ABC, abstractmethod
-from collections.abc import Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import IO, Any, Literal, Self, override
+from typing import IO, Any, Literal, Self, overload, override
 
 type Endianness = Literal["little"] | Literal["big"]
 
@@ -800,7 +800,7 @@ class TagString(Tag[str, str]):
 
 
 @dataclass(frozen=True)
-class TagList[T, P](Tag[Sequence[Tag[T, P]], list[P]]):
+class TagList[T, P](Tag[Sequence[Tag[T, P]], list[P]], Sequence[Tag[T, P]]):
     """
     NBT tag for a list containing nameless tags of one kind.
     """
@@ -853,12 +853,25 @@ class TagList[T, P](Tag[Sequence[Tag[T, P]], list[P]]):
         string += "}"
         return string
 
-    def __getitem__(self, index: int) -> Tag[T, P]:
+    @overload
+    def __getitem__(self, index: int) -> Tag[T, P]: ...
+
+    @overload
+    def __getitem__(self, index: slice[int, int, int]) -> Sequence[Tag[T, P]]: ...
+
+    @override
+    def __getitem__(
+        self, index: int | slice[int, int, int]
+    ) -> Tag[T, P] | Sequence[Tag[T, P]]:
         return self.value[index]
+
+    @override
+    def __len__(self) -> int:
+        return len(self.value)
 
 
 @dataclass(frozen=True)
-class TagByteList(Tag[Sequence[int], Sequence[int]]):
+class TagByteList(Tag[Sequence[int], Sequence[int]], Sequence[int]):
     """
     NBT tag for a list of bytes.
     """
@@ -899,12 +912,23 @@ class TagByteList(Tag[Sequence[int], Sequence[int]]):
         string += "}"
         return string
 
-    def __getitem__(self, index: int) -> int:
+    @overload
+    def __getitem__(self, index: int) -> int: ...
+
+    @overload
+    def __getitem__(self, index: slice[int, int, int]) -> Sequence[int]: ...
+
+    @override
+    def __getitem__(self, index: int | slice[int, int, int]) -> int | Sequence[int]:
         return self.value[index]
+
+    @override
+    def __len__(self) -> int:
+        return len(self.value)
 
 
 @dataclass(frozen=True)
-class TagIntList(Tag[Sequence[int], Sequence[int]]):
+class TagIntList(Tag[Sequence[int], Sequence[int]], Sequence[int]):
     """
     NBT tag for a list of integers.
     """
@@ -945,12 +969,23 @@ class TagIntList(Tag[Sequence[int], Sequence[int]]):
         string += "}"
         return string
 
-    def __getitem__(self, index: int) -> int:
+    @overload
+    def __getitem__(self, index: int) -> int: ...
+
+    @overload
+    def __getitem__(self, index: slice[int, int, int]) -> Sequence[int]: ...
+
+    @override
+    def __getitem__(self, index: int | slice[int, int, int]) -> int | Sequence[int]:
         return self.value[index]
+
+    @override
+    def __len__(self) -> int:
+        return len(self.value)
 
 
 @dataclass(frozen=True)
-class TagLongList(Tag[Sequence[int], Sequence[int]]):
+class TagLongList(Tag[Sequence[int], Sequence[int]], Sequence[int]):
     """
     NBT tag for a list of long integers.
     """
@@ -991,12 +1026,25 @@ class TagLongList(Tag[Sequence[int], Sequence[int]]):
         string += "}"
         return string
 
-    def __getitem__(self, index: int) -> int:
+    @overload
+    def __getitem__(self, index: int) -> int: ...
+
+    @overload
+    def __getitem__(self, index: slice[int, int, int]) -> Sequence[int]: ...
+
+    @override
+    def __getitem__(self, index: int | slice[int, int, int]) -> int | Sequence[int]:
         return self.value[index]
+
+    @override
+    def __len__(self) -> int:
+        return len(self.value)
 
 
 @dataclass(frozen=True)
-class TagCompound[T, P](Tag[Sequence[Tag[T, P]], dict[str, P]]):
+class TagCompound[T, P](
+    Tag[Sequence[Tag[T, P]], dict[str, P]], Mapping[str, Tag[T, P]]
+):
     """
     NBT tag for a compound (list of uniquely named tags).
     """
@@ -1046,11 +1094,20 @@ class TagCompound[T, P](Tag[Sequence[Tag[T, P]], dict[str, P]]):
         string += "}"
         return string
 
+    @override
     def __getitem__(self, key: str) -> Tag[T, P]:
         for tag in self.value:
             if tag.name == key:
                 return tag
         raise KeyError(f"{key!r}")
+
+    @override
+    def __iter__(self) -> Iterator[str]:
+        return (tag.name for tag in self.value)
+
+    @override
+    def __len__(self) -> int:
+        return len(self.value)
 
 
 def load(
